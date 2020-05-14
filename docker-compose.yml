@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  weather:
+    image: ${DOCKER_REGISTRY-}weather
+    depends_on: [db]
+    ports:  ["5101:80"]
+    environment:
+     PROP1 : simple test value
+     PROP2 : Y
+    
+    build:
+      context: .
+      dockerfile: Weather/Dockerfile
+   
+  apiclient:
+    image: ${DOCKER_REGISTRY-}apiclient
+    depends_on: [db]
+    build:
+      context: .
+      dockerfile: ApiClient/Dockerfile
+  
+  dbreader:
+    image: ${DOCKER_REGISTRY-}dbreader
+    depends_on:  [db]
+    build:
+      context: .
+      dockerfile: DBReader/Dockerfile
+  
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: new_base
+    
